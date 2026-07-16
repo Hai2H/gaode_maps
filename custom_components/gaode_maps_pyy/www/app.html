@@ -12,22 +12,25 @@
   <script src="js/coordinateutil.js"></script>
   <link rel="stylesheet" href="app.css">
 </head>
-<body class="h-screen overflow-hidden bg-slate-950 text-slate-100">
+<body class="h-screen overflow-hidden">
   <div id="app" class="relative h-screen w-screen">
     <div id="map" class="absolute inset-0"></div>
 
-    <section id="sidePanel" class="absolute left-3 top-3 z-20 flex max-h-[calc(100vh-1.5rem)] w-[360px] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded-lg border border-white/15 bg-slate-950/88 shadow-2xl backdrop-blur">
-      <header class="border-b border-white/10 px-4 py-3">
+    <section id="sidePanel" class="side-panel absolute left-3 top-3 z-20 flex max-h-[calc(100vh-1.5rem)] w-[360px] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded-lg shadow-2xl backdrop-blur">
+      <header class="panel-header px-4 py-3">
         <div class="flex items-center justify-between gap-3">
-          <div>
+          <div class="min-w-0">
             <h1 class="text-base font-semibold leading-6">高德地图自用版</h1>
-            <p id="summaryText" class="text-xs text-slate-300">正在加载 Home Assistant 数据</p>
+            <p id="summaryText" class="truncate text-xs">正在加载 Home Assistant 数据</p>
           </div>
-          <button id="reloadButton" class="rounded-md border border-white/10 px-2 py-1 text-xs text-slate-200 hover:bg-white/10">刷新</button>
+          <div class="flex shrink-0 items-center gap-2">
+            <button id="reloadButton" class="mini-button">刷新</button>
+            <button id="panelToggleButton" class="mini-button">收起</button>
+          </div>
         </div>
       </header>
 
-      <div class="space-y-3 overflow-y-auto p-3">
+      <div id="sidePanelBody" class="panel-content space-y-3 overflow-y-auto p-3">
         <div class="grid grid-cols-2 gap-2">
           <button id="fitButton" class="control-button">全部定位</button>
           <button id="trafficButton" class="control-button">交通</button>
@@ -35,25 +38,25 @@
           <button id="themeButton" class="control-button">主题</button>
         </div>
 
-        <div class="rounded-md border border-white/10 bg-slate-900/70 p-3">
+        <div class="panel-card rounded-md p-3">
           <div class="mb-2 flex items-center justify-between gap-3">
             <h2 class="text-sm font-medium">设备</h2>
-            <span id="deviceCount" class="text-xs text-slate-400">0 个</span>
+            <span id="deviceCount" class="muted-text text-xs">0 个</span>
           </div>
           <div id="deviceList" class="space-y-2"></div>
         </div>
 
-        <div id="routePanel" class="rounded-md border border-white/10 bg-slate-900/70 p-3">
+        <div id="routePanel" class="panel-card rounded-md p-3">
           <h2 class="mb-2 text-sm font-medium">回家路线</h2>
           <div class="grid grid-cols-3 gap-2">
             <button data-route-mode="drive" class="route-button active">驾车</button>
             <button data-route-mode="walk" class="route-button">步行</button>
             <button data-route-mode="ride" class="route-button">骑行</button>
           </div>
-          <p id="routeStatus" class="mt-2 text-xs text-slate-400">选择设备后可规划到 HA 家位置的路线</p>
+          <p id="routeStatus" class="muted-text mt-2 text-xs">选择设备后可规划到 HA 家位置的路线</p>
         </div>
 
-        <div id="trackPanel" class="rounded-md border border-white/10 bg-slate-900/70 p-3">
+        <div id="trackPanel" class="panel-card rounded-md p-3">
           <h2 class="mb-2 text-sm font-medium">历史轨迹</h2>
           <div class="grid grid-cols-1 gap-2">
             <input id="trackFrom" type="datetime-local" class="field">
@@ -65,17 +68,17 @@
             <button id="trackPauseButton" class="track-button">暂停</button>
             <button id="trackStopButton" class="track-button">停止</button>
           </div>
-          <p id="trackStatus" class="mt-2 text-xs text-slate-400">选择设备后可查询历史轨迹</p>
+          <p id="trackStatus" class="muted-text mt-2 text-xs">选择设备后可查询历史轨迹</p>
         </div>
       </div>
     </section>
 
-    <div id="cardOverlay" class="pointer-events-none absolute left-2 top-2 z-20 hidden rounded-md bg-slate-950/80 px-3 py-2 text-xs shadow-lg backdrop-blur">
+    <div id="cardOverlay" class="card-overlay pointer-events-none absolute left-2 top-2 z-20 hidden rounded-md px-3 py-2 text-xs shadow-lg backdrop-blur">
       <div id="cardTitle" class="font-medium">高德地图自用版</div>
-      <div id="cardSubtitle" class="text-slate-300">正在加载</div>
+      <div id="cardSubtitle" class="muted-text">正在加载</div>
     </div>
 
-    <div id="toast" class="pointer-events-none absolute bottom-4 left-1/2 z-30 hidden -translate-x-1/2 rounded-md bg-slate-950/90 px-4 py-2 text-sm text-white shadow-lg"></div>
+    <div id="toast" class="toast pointer-events-none absolute bottom-4 left-1/2 z-30 hidden -translate-x-1/2 rounded-md px-4 py-2 text-sm shadow-lg"></div>
   </div>
   <script src="app.js"></script>
 </body>

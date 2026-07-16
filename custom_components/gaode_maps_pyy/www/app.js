@@ -26,7 +26,8 @@
       this.trafficLayer = null;
       this.trafficVisible = false;
       this.zonesVisible = true;
-      this.darkMode = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+      this.darkMode = this.resolveInitialDarkMode();
+      this.panelCollapsed = window.localStorage.getItem("GAODE_PYY_PANEL_COLLAPSED") === "1";
 
       this.devices = new Map();
       this.deviceMarkers = new Map();
@@ -75,7 +76,7 @@
 
     cacheElements() {
       const ids = [
-        "sidePanel", "summaryText", "reloadButton", "fitButton", "trafficButton", "zonesButton",
+        "sidePanel", "sidePanelBody", "summaryText", "reloadButton", "panelToggleButton", "fitButton", "trafficButton", "zonesButton",
         "themeButton", "deviceList", "deviceCount", "routeStatus", "trackStatus", "trackFrom",
         "trackTo", "trackLoadButton", "trackPlayButton", "trackPauseButton", "trackStopButton",
         "cardOverlay", "cardTitle", "cardSubtitle", "toast"
@@ -86,6 +87,8 @@
     }
 
     applyMode() {
+      this.applyThemeChrome();
+      this.applyPanelState();
       if (this.mode === "card") {
         this.elements.sidePanel.classList.add("hidden");
         this.elements.cardOverlay.classList.remove("hidden");
@@ -94,6 +97,7 @@
 
     bindEvents() {
       this.elements.reloadButton.addEventListener("click", () => this.loadStates());
+      this.elements.panelToggleButton.addEventListener("click", () => this.togglePanel());
       this.elements.fitButton.addEventListener("click", () => this.fitAll());
       this.elements.trafficButton.addEventListener("click", () => this.toggleTraffic());
       this.elements.zonesButton.addEventListener("click", () => this.toggleZones());
@@ -263,7 +267,7 @@
           <button class="device-row${active}" data-device-id="${this.escapeHtml(device.entity_id)}">
             <div class="device-title">
               <span>${this.escapeHtml(device.name)}</span>
-              <span class="text-[11px] text-slate-400">${this.escapeHtml(device.state || "")}</span>
+              <span class="muted-text text-[11px]">${this.escapeHtml(device.state || "")}</span>
             </div>
             <div class="device-meta">${this.escapeHtml(device.address || locationText)}</div>
           </button>
@@ -475,8 +479,43 @@
 
     toggleTheme() {
       this.darkMode = !this.darkMode;
+      window.localStorage.setItem("GAODE_PYY_THEME", this.darkMode ? "dark" : "light");
+      this.applyThemeChrome();
       this.map.setMapStyle(this.darkMode ? "amap://styles/dark" : "amap://styles/normal");
-      this.elements.themeButton.classList.toggle("active", this.darkMode);
+    }
+
+    applyThemeChrome() {
+      document.documentElement.dataset.theme = this.darkMode ? "dark" : "light";
+      if (this.elements.themeButton) {
+        this.elements.themeButton.classList.toggle("active", this.darkMode);
+        this.elements.themeButton.textContent = this.darkMode ? "深色" : "浅色";
+      }
+    }
+
+    resolveInitialDarkMode() {
+      const saved = window.localStorage.getItem("GAODE_PYY_THEME");
+      if (saved === "dark") {
+        return true;
+      }
+      if (saved === "light") {
+        return false;
+      }
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+
+    togglePanel() {
+      this.panelCollapsed = !this.panelCollapsed;
+      window.localStorage.setItem("GAODE_PYY_PANEL_COLLAPSED", this.panelCollapsed ? "1" : "0");
+      this.applyPanelState();
+    }
+
+    applyPanelState() {
+      if (!this.elements.sidePanel || !this.elements.panelToggleButton) {
+        return;
+      }
+      this.elements.sidePanel.classList.toggle("is-collapsed", this.panelCollapsed);
+      this.elements.panelToggleButton.textContent = this.panelCollapsed ? "展开" : "收起";
+      this.elements.panelToggleButton.setAttribute("aria-expanded", String(!this.panelCollapsed));
     }
 
     fitAll() {
