@@ -19,6 +19,7 @@
       this.AMap = null;
       this.map = null;
       this.homePoint = null;
+      this.homeMarker = null;
       this.selectedDeviceId = null;
       this.routeMode = "drive";
       this.routeSearch = null;
@@ -27,7 +28,7 @@
       this.trafficVisible = false;
       this.zonesVisible = true;
       this.darkMode = this.resolveInitialDarkMode();
-      this.panelCollapsed = window.localStorage.getItem("GAODE_PYY_PANEL_COLLAPSED") === "1";
+      this.panelCollapsed = this.resolveInitialPanelCollapsed();
 
       this.devices = new Map();
       this.deviceMarkers = new Map();
@@ -182,13 +183,40 @@
       });
 
       this.devices = incoming;
+      this.renderHome();
       this.renderDevices();
       this.renderZones(zones);
       this.updateDeviceList();
       this.updateCardInfo();
       if (!silent) {
-        this.fitAll();
+        if (this.mode === "card") {
+          this.updateCardInfo();
+        } else {
+          this.focusHome();
+        }
       }
+    }
+
+    renderHome() {
+      if (!this.homePoint || !this.map) {
+        return;
+      }
+      const position = this.toGaodePoint(this.homePoint);
+      if (this.homeMarker) {
+        this.homeMarker.setPosition(position);
+        return;
+      }
+      this.homeMarker = new this.AMap.Marker({
+        map: this.map,
+        position: position,
+        content: this.markerHtml("家", "home"),
+        offset: new this.AMap.Pixel(-18, -18),
+        zIndex: 90
+      });
+      this.homeMarker.on("click", () => {
+        this.focusHome();
+        this.setSummary("当前中心：家");
+      });
     }
 
     renderDevices() {
@@ -518,11 +546,34 @@
       this.elements.panelToggleButton.setAttribute("aria-expanded", String(!this.panelCollapsed));
     }
 
+    resolveInitialPanelCollapsed() {
+      const saved = window.localStorage.getItem("GAODE_PYY_PANEL_COLLAPSED");
+      if (saved === "1") {
+        return true;
+      }
+      if (saved === "0") {
+        return false;
+      }
+      return window.matchMedia && window.matchMedia("(max-width: 720px)").matches;
+    }
+
+    focusHome() {
+      if (!this.homePoint || !this.map) {
+        return;
+      }
+      this.map.setCenter(this.toGaodePoint(this.homePoint));
+      this.map.setZoom(this.mode === "card" ? this.zoom : 14);
+      this.setSummary("当前中心：家");
+    }
+
     fitAll() {
       if (!this.map) {
         return;
       }
       const overlays = Array.from(this.deviceMarkers.values());
+      if (this.homeMarker) {
+        overlays.push(this.homeMarker);
+      }
       this.zoneOverlays.forEach((overlay) => overlays.push(overlay));
       if (overlays.length) {
         this.map.setFitView(overlays, false, [60, 60, 60, 420]);
@@ -631,7 +682,7 @@
     }
 
     markerHtml(label, type) {
-      const className = type === "zone" ? "map-zone-marker" : "map-device-marker";
+      const className = type === "zone" ? "map-zone-marker" : (type === "home" ? "map-home-marker" : "map-device-marker");
       return `<div class="${className}"><span class="marker-dot"></span><span class="marker-label">${this.escapeHtml(label)}</span></div>`;
     }
 

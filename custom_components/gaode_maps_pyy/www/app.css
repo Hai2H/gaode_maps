@@ -168,7 +168,8 @@ body {
 }
 
 .map-device-marker,
-.map-zone-marker {
+.map-zone-marker,
+.map-home-marker {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -191,6 +192,10 @@ body {
 
 .map-zone-marker {
   background: linear-gradient(135deg, #16a34a, #059669);
+}
+
+.map-home-marker {
+  background: linear-gradient(135deg, #dc2626, #f97316);
 }
 
 .marker-dot {
@@ -216,16 +221,58 @@ body {
 }
 
 @media (max-width: 720px) {
+  .control-button,
+  .route-button,
+  .track-button,
+  .mini-button,
+  .field {
+    min-height: 40px;
+  }
+
   #sidePanel {
-    left: 0.5rem;
-    right: 0.5rem;
+    left: calc(0.5rem + env(safe-area-inset-left));
+    right: calc(0.5rem + env(safe-area-inset-right));
     top: auto;
-    bottom: 0.5rem;
+    bottom: calc(0.5rem + env(safe-area-inset-bottom));
     width: auto;
-    max-height: 46vh;
+    max-width: none;
+    max-height: min(58vh, 520px);
+    border-radius: 14px;
   }
 
   #sidePanel.is-collapsed {
     width: auto;
+  }
+
+  #sidePanel.is-collapsed .panel-header {
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+
+  .panel-content {
+    padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+  }
+
+  .device-row {
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  #sidePanel {
+    left: calc(0.375rem + env(safe-area-inset-left));
+    right: calc(0.375rem + env(safe-area-inset-right));
+    bottom: calc(0.375rem + env(safe-area-inset-bottom));
+  }
+
+  .panel-header {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+  }
+
+  .mini-button {
+    min-width: 38px;
+    padding-left: 7px;
+    padding-right: 7px;
   }
 }
