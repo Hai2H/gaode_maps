@@ -18,11 +18,44 @@ function MapGaode() {
 }
 ZOOM = query.get('zoom') || 15;
 MapGaode.prototype = {
+    escapeHtml: function(value) {
+        return String(value == null ? "" : value)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+    },
+
+    buildTextMarkerContent: function(label, color) {
+        return [
+            '<div style="display:inline-flex;align-items:center;max-width:180px;padding:4px 8px;',
+            'border-radius:14px;background:', color, ';color:#fff;font-size:12px;',
+            'line-height:16px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.24);">',
+            '<span style="display:inline-block;width:6px;height:6px;margin-right:5px;',
+            'border-radius:50%;background:#fff;"></span>',
+            '<span style="overflow:hidden;text-overflow:ellipsis;">', this.escapeHtml(label), '</span>',
+            '</div>'
+        ].join("");
+    },
+
+    createTextMarker: function(options) {
+        var label = options.label || "";
+        var color = options.color || "#1677ff";
+        return new AMap.Marker({
+            map: options.map,
+            position: options.position,
+            content: this.buildTextMarkerContent(label, color),
+            offset: new AMap.Pixel(-12, -12),
+            extData: {
+                label: label,
+                color: color
+            }
+        });
+    },
+
     init: function(coordinate,zone) {
         var that = this;
-
-        AMapUI.loadUI(['overlay/SimpleMarker'], function(SimpleMarker) {
-            AMap.SimpleMarker = SimpleMarker;
 
             var cCoordinate = that.getCustomCoordinate(coordinate);
             that.map = new AMap.Map('mapContainer', {
@@ -63,11 +96,10 @@ MapGaode.prototype = {
 				var cZone = that.getCustomCoordinate({'lon':n.longitude,'lat':n.latitude });
 				
 				//标注zone
-				var vhomepointLayer = new AMap.SimpleMarker({
+				var vhomepointLayer = that.createTextMarker({
 					map: that.map,
-					iconLabel: n.friendly_name,
-					iconTheme: 'default',
-					iconStyle: 'green',
+					label: n.friendly_name,
+					color: '#2f8f46',
 					position: [cZone.lon, cZone.lat]
 				});
 				
@@ -126,7 +158,8 @@ MapGaode.prototype = {
                     for(var deviceId in that.devicesLayer) {
                         if(that.devicesLayer[deviceId].visible) {
                             if(that.homerangeLayer.contains(that.devicesLayer[deviceId].getPosition())) {
-                                info.push("<li style=\"cursor: pointer;\" onclick=\"(function() { var event = new Event('hass-more-info', { bubbles: true, cancelable: false, composed: true }); event.detail = { entityId: 'device_tracker." + deviceId + "' }; parent.document.querySelector('home-assistant').dispatchEvent(event); })()\">" + that.devicesLayer[deviceId].getContent().innerText + "</li>");
+                                var markerData = that.devicesLayer[deviceId].getExtData() || {};
+                                info.push("<li style=\"cursor: pointer;\" onclick=\"(function() { var event = new Event('hass-more-info', { bubbles: true, cancelable: false, composed: true }); event.detail = { entityId: 'device_tracker." + deviceId + "' }; parent.document.querySelector('home-assistant').dispatchEvent(event); })()\">" + (markerData.label || deviceId) + "</li>");
 
                             }
                         }
@@ -140,7 +173,6 @@ MapGaode.prototype = {
             });
 
             $(document).trigger('mapInitFinished');
-        });
     },
 	
 	fireEvent: function(type, data = {}) {
@@ -317,12 +349,13 @@ MapGaode.prototype = {
         var cCoordinate = this.getCustomCoordinate(coordinate);
         if(this.devicesLayer[deviceid]) {
             this.devicesLayer[deviceid].setPosition([cCoordinate.lon, cCoordinate.lat]);
+            this.devicesLayer[deviceid].setExtData({ label: lableName, color: '#1677ff' });
+            this.devicesLayer[deviceid].setContent(this.buildTextMarkerContent(lableName, '#1677ff'));
         } else {
-            this.devicesLayer[deviceid] = new AMap.SimpleMarker({
+            this.devicesLayer[deviceid] = this.createTextMarker({
                 map: that.map,
-                iconLabel: lableName,
-                iconTheme: 'fresh',
-                iconStyle: 'blue',
+                label: lableName,
+                color: '#1677ff',
                 position: [cCoordinate.lon, cCoordinate.lat]
             });
             this.devicesLayer[deviceid].visible = true;
@@ -379,50 +412,54 @@ MapGaode.prototype = {
 		});		*/
 		
 		
-        if(that.homerangeLayer.contains([c.lng, c.lat])) {
+        if(that.homerangeLayer && that.homerangeLayer.contains([c.lng, c.lat])) {
             $(document).trigger('updateDrivingState', {'deviceId': deviceid, 'state_r': 'Home'});
 			//$(document).trigger('updateDrivingTime', {'deviceId': deviceid, 'time': 'Home'});
 
         } else {
-			
+			var routeClassName = "Driving";
 			if (tracktype == "ride"){	//骑行
-				this.devicesDrivingLayer[deviceid] = new AMap.Riding({
-					map: this.devicesLayer[deviceid].visible ? that.map : null,
-					hideMarkers: true,
-					autoFitView: false
-				});
+				routeClassName = "Riding";
 			}else if (tracktype == "walk") {	//步行
-				this.devicesDrivingLayer[deviceid] = new AMap.Walking({
-					map: this.devicesLayer[deviceid].visible ? that.map : null,
-					hideMarkers: true,
-					autoFitView: false
-				});
-			} else {	//驾车
-				this.devicesDrivingLayer[deviceid] = new AMap.Driving({
-					map: this.devicesLayer[deviceid].visible ? that.map : null,
-					hideMarkers: true,
-					autoFitView: false
-				});
+				routeClassName = "Walking";
 			}
-			
-			
-			
-            this.devicesDrivingLayer[deviceid].search([c.lng, c.lat], [cCoordinate.lon, cCoordinate.lat]);
-            this.devicesDrivingLayer[deviceid].on('complete', function(DrivingResult) {
-                if(null == DrivingResult) {
-                    return;
-                }
-                
-                if(null == DrivingResult.routes) {
-                    return;
-                }
-                
-                var sum = 0;
-                for(var index in DrivingResult.routes) {
-                    sum += DrivingResult.routes[index].time;
-                }
-                $(document).trigger('updateDrivingTime', {'deviceId': deviceid, 'time': sum});
-            });
+
+			AMap.plugin(["AMap.Driving", "AMap.Walking", "AMap.Riding"], function() {
+				if(!AMap[routeClassName]) {
+					console.warn("AMap route plugin is unavailable: " + routeClassName);
+					return;
+				}
+
+				if(null == that.devicesLayer[deviceid]) {
+					return;
+				}
+
+				try {
+					that.devicesDrivingLayer[deviceid] = new AMap[routeClassName]({
+						map: that.devicesLayer[deviceid].visible ? that.map : null,
+						hideMarkers: true,
+						autoFitView: false
+					});
+					that.devicesDrivingLayer[deviceid].search([c.lng, c.lat], [cCoordinate.lon, cCoordinate.lat]);
+					that.devicesDrivingLayer[deviceid].on('complete', function(DrivingResult) {
+						if(null == DrivingResult) {
+							return;
+						}
+						
+						if(null == DrivingResult.routes) {
+							return;
+						}
+						
+						var sum = 0;
+						for(var index in DrivingResult.routes) {
+							sum += DrivingResult.routes[index].time;
+						}
+						$(document).trigger('updateDrivingTime', {'deviceId': deviceid, 'time': sum});
+					});
+				} catch (error) {
+					console.warn("AMap route search failed", error);
+				}
+			});
         }
     },
     
