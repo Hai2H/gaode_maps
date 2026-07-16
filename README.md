@@ -1,5 +1,7 @@
-# 墨澜(高德)地图增强版  gaode_maps
-gaode_maps for homeassistant
+# 高德地图自用版  gaode_maps_pyy
+gaode_maps_pyy for Home Assistant
+
+本仓库是 `dscao/gaode_maps` 的自用 fork，使用独立 domain `gaode_maps_pyy`，可与原版 `gaode_maps` 同时安装。前端高德地图加载方式已调整为 `AMapLoader`，并指定 JS API `version: "2.0"`。
 
 1、使用自定义集成方式UI配置
 
@@ -9,7 +11,7 @@ gaode_maps for homeassistant
 
 4、增加自定义卡片
 
-5、实体对话框可显示定位地图，增加属性时custom_ui_more_info: gaode-map 显示
+5、实体对话框可显示定位地图，增加属性时 custom_ui_more_info: gaode-map-pyy 显示
 
 6、增加比例尺显示
 
@@ -20,7 +22,7 @@ gaode_maps for homeassistant
 9、增加深色模式(高德API key必须正确填写)，统一按系统主题自动显示浅色模式或深色模式
 
 
-本项目修改自 https://github.com/cxlwill/ha-inkwavemap 
+本项目修改自 https://github.com/dscao/gaode_maps 和 https://github.com/cxlwill/ha-inkwavemap 
 
 参考借鉴 https://github.com/shaonianzhentan/google_maps 
 
@@ -28,13 +30,13 @@ gaode_maps for homeassistant
 # 安装方法
 
 
-HACS > 集成 > 右上角自定义存储库填入： https://github.com/dscao/gaode_maps 集成，随后下载安装，按提示重启ha.
+HACS > 集成 > 右上角自定义存储库填入： https://github.com/Hai2H/gaode_maps ，类型选择“集成”，随后下载安装，按提示重启 Home Assistant。
 
-或者下载 [latest release](https://github.com/dscao/gaode_maps/releases) 后解压复制gaode_maps目录到 /config/custom_components目录下，重启ha。
+或者下载 release 后解压复制 `custom_components/gaode_maps_pyy` 到 `/config/custom_components/gaode_maps_pyy`，重启 Home Assistant。
 
 # 配置方法
 
-homeassistant 配置 > 设备与服务 > 添加集成 > 搜索 gaode_maps 或墨澜地图，按提示操作。
+Home Assistant 配置 > 设备与服务 > 添加集成 > 搜索 `gaode_maps_pyy` 或 `高德地图自用版`，按提示操作。
 
 高德API key
 请至高德开放平台http://lbs.amap.com/ 获取 \

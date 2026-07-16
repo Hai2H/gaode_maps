@@ -3,7 +3,7 @@ customElements.whenDefined('ha-panel-lovelace').then(() => {
   const html = LitElement.prototype.html;
   const css = LitElement.prototype.css;
 
-  customElements.define('gaode-map', class extends LitElement {
+  customElements.define('gaode-map-pyy', class extends LitElement {
 
     static properties = {
       hass: {},
@@ -17,7 +17,7 @@ customElements.whenDefined('ha-panel-lovelace').then(() => {
 
     constructor() {
       super();
-	  this.hasstoken = sessionStorage['GAODE_HASSTOKEN']
+	  this.hasstoken = sessionStorage['GAODE_PYY_HASSTOKEN']
     }
 
     static getStubConfig() {
@@ -53,13 +53,13 @@ customElements.whenDefined('ha-panel-lovelace').then(() => {
         }
         
         return html`<iframe style="height: ${height}px;" 
-          src="/gaode_maps_www/card.html?hasstoken=${this.hasstoken}&v=${version}&idlist=${entity_id}&zoom=${zoom}"
+          src="/gaode_maps_pyy_www/card.html?hasstoken=${this.hasstoken}&v=${version}&idlist=${entity_id}&zoom=${zoom}"
           ></iframe>${stateObj ? html`<ha-attributes .hass=${this.hass} .stateObj=${stateObj}></ha-attributes>` : ''}`
       } else {
         if (!this.loading) {
           this.loading = true
-          this.hass.callWS({ type: 'gaode_maps', data: { type: 'gaodekey' } }).then(({ hasstoken }) => {
-			sessionStorage['GAODE_HASSTOKEN'] = hasstoken;
+          this.hass.callWS({ type: 'gaode_maps_pyy', data: { type: 'gaodekey' } }).then(({ hasstoken }) => {
+			sessionStorage['GAODE_PYY_HASSTOKEN'] = hasstoken;
 			this.hasstoken = hasstoken;
 		  })
         }
@@ -70,10 +70,10 @@ customElements.whenDefined('ha-panel-lovelace').then(() => {
 
   window.customCards = window.customCards || [];
   window.customCards.push({
-    type: "gaode-map",
-    name: "高德地图",
+    type: "gaode-map-pyy",
+    name: "高德地图自用版",
     preview: true,
-    description: "高德地图卡片"
+    description: "高德地图自用版卡片"
   });
 
 })

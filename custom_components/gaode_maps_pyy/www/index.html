@@ -27,25 +27,41 @@
     <link rel="stylesheet" href='css/map.css'/>
     <script src="js/coordinateutil.js?"+Math.random()></script>
 	
+    <script src="https://webapi.amap.com/loader.js"></script>
 	<script type="text/javascript">
 		if (GaodeMapjscode!="") {
 			window._AMapSecurityConfig = {
-				securityJsCode:GaodeMapjscode,
+				securityJsCode: GaodeMapjscode,
 			}
-		}
-			else if (GaodeMapserviceHost!="") {
+		} else if (typeof GaodeMapserviceHost !== "undefined" && GaodeMapserviceHost!="") {
 			window._AMapSecurityConfig = {
-				serviceHost:GaodeMapserviceHost,
+				serviceHost: GaodeMapserviceHost,
 			}
 		}
+        window.gaodeMapReady = AMapLoader.load({
+            key: GaodeMapKey,
+            version: "2.0",
+            plugins: [
+                "AMap.MarkerClusterer",
+                "AMap.Scale",
+                "AMap.MapType",
+                "AMap.Driving",
+                "AMap.Walking",
+                "AMap.Riding"
+            ],
+            AMapUI: {
+                version: "1.1",
+                plugins: ["overlay/SimpleMarker"]
+            }
+        }).then(function(AMap) {
+            window.AMap = AMap;
+            return AMap;
+        }).catch(function(error) {
+            console.error("AMapLoader load failed", error);
+            alert("高德地图加载失败，请检查 Web Key、安全密钥和网络连接。");
+            throw error;
+        });
     </script>
-
-	<script type="text/javascript">
-        var gaodeMapAPI = "<script src='https://webapi.amap.com/maps?v=1.4.15&key=" + GaodeMapKey + "&plugin=AMap.MarkerClusterer,AMap.Scale,AMap.MapType,AMap.Driving,AMap.Walking,AMap.Riding'><\/script>";
-    //    console.info(gaodeMapAPI);
-        document.write(gaodeMapAPI);
-    </script>
-    <script src="https://webapi.amap.com/ui/1.0/main.js"></script>
 	
     
     <script src="js/mapgaode.js?"+Math.random()></script>

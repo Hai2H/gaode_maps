@@ -103,13 +103,21 @@ MapGaode.prototype = {
                 offset: new AMap.Pixel(-16, -16)
 				//offset: new AMap.Pixel(-26, 0)
             }]
-            that.markerClusterer = new AMap.MarkerClusterer(
-                that.map, 
-                [], {
-                styles: sts,
-                gridSize: 20,
-                zoomOnClick: true
-            });
+            if (AMap.MarkerClusterer) {
+                that.markerClusterer = new AMap.MarkerClusterer(
+                    that.map, 
+                    [], {
+                    styles: sts,
+                    gridSize: 20,
+                    zoomOnClick: true
+                });
+            } else {
+                console.warn("AMap.MarkerClusterer is unavailable; marker clustering is disabled.");
+                that.markerClusterer = {
+                    setMarkers: function() {},
+                    on: function() {}
+                };
+            }
             that.markerClusterer.on('click', function({cluster, lnglat, target, markers}) {
                 if(that.homerangeLayer.contains(lnglat)) {
                     var info = [];

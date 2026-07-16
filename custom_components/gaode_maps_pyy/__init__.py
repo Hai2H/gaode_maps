@@ -11,6 +11,7 @@ import logging
 from .manifest import manifest
 DOMAIN = manifest.domain
 VERSION = manifest.version
+STATIC_PATH = f"/{DOMAIN}_www"
 
 CONFIG_SCHEMA = cv.deprecated(DOMAIN)
 
@@ -37,20 +38,20 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         devicetrackeridlist = ''
 
     await hass.http.async_register_static_paths([
-        StaticPathConfig("/gaode_maps_www", hass.config.path("custom_components/" + DOMAIN + "/www"), False)
+        StaticPathConfig(STATIC_PATH, hass.config.path("custom_components/" + DOMAIN + "/www"), False)
     ])
     
     frontend.async_register_built_in_panel(
         hass,
         component_name="iframe",
-        sidebar_title="墨澜地图",
+        sidebar_title="高德地图自用版",
         sidebar_icon="mdi:map",
         frontend_url_path=DOMAIN,
-        config={ "url": f"/gaode_maps_www/index.html?hasstoken={hasstoken}&gaodekey={gaodekey}&jscode={jscode}&devicetrackeridlist={devicetrackeridlist}&v={VERSION}" },
+        config={ "url": f"{STATIC_PATH}/index.html?hasstoken={hasstoken}&gaodekey={gaodekey}&jscode={jscode}&devicetrackeridlist={devicetrackeridlist}&v={VERSION}" },
         require_admin=False
     )
                         
-    frontend.add_extra_js_url(hass, f'/gaode_maps_www/map.js?v={VERSION}')
+    frontend.add_extra_js_url(hass, f'{STATIC_PATH}/map.js?v={VERSION}')
     
     def receive_data(hass, connection, msg):
         data = msg['data']
