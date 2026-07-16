@@ -1,0 +1,131 @@
+html,
+body,
+#app,
+#map {
+  height: 100%;
+}
+
+.control-button,
+.route-button,
+.track-button {
+  border: 1px solid rgb(255 255 255 / 0.1);
+  border-radius: 6px;
+  background: rgb(15 23 42 / 0.86);
+  color: rgb(226 232 240);
+  font-size: 12px;
+  line-height: 18px;
+  padding: 7px 9px;
+  transition: background 120ms ease, border-color 120ms ease, color 120ms ease;
+}
+
+.control-button:hover,
+.route-button:hover,
+.track-button:hover {
+  background: rgb(30 41 59 / 0.96);
+}
+
+.control-button.active,
+.route-button.active,
+.track-button.active {
+  border-color: rgb(56 189 248 / 0.65);
+  background: rgb(14 165 233 / 0.22);
+  color: white;
+}
+
+.field {
+  min-height: 34px;
+  border: 1px solid rgb(255 255 255 / 0.12);
+  border-radius: 6px;
+  background: rgb(15 23 42 / 0.86);
+  color: rgb(226 232 240);
+  font-size: 12px;
+  padding: 6px 8px;
+}
+
+.device-row {
+  width: 100%;
+  border: 1px solid rgb(255 255 255 / 0.08);
+  border-radius: 6px;
+  background: rgb(15 23 42 / 0.72);
+  color: rgb(226 232 240);
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.device-row:hover,
+.device-row.active {
+  border-color: rgb(56 189 248 / 0.55);
+  background: rgb(14 165 233 / 0.16);
+}
+
+.device-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.device-meta {
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: rgb(148 163 184);
+  font-size: 12px;
+}
+
+.map-device-marker,
+.map-zone-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 180px;
+  border: 2px solid white;
+  border-radius: 999px;
+  box-shadow: 0 8px 22px rgb(15 23 42 / 0.38);
+  color: white;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  padding: 5px 9px;
+  white-space: nowrap;
+}
+
+.map-device-marker {
+  background: linear-gradient(135deg, #0284c7, #2563eb);
+}
+
+.map-zone-marker {
+  background: linear-gradient(135deg, #16a34a, #059669);
+}
+
+.marker-dot {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  border-radius: 999px;
+  background: white;
+}
+
+.marker-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.amap-info-content {
+  color: #0f172a;
+}
+
+@media (max-width: 720px) {
+  #sidePanel {
+    left: 0.5rem;
+    right: 0.5rem;
+    top: auto;
+    bottom: 0.5rem;
+    width: auto;
+    max-height: 46vh;
+  }
+}
