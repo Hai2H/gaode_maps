@@ -1,4 +1,7 @@
 {
     "name": "高德迹图",
-    "render_readme": true
+    "render_readme": true,
+    "iot_class": "Local Polling",
+    "homeassistant": "2024.10.0",
+    "country": "zh"
 }
