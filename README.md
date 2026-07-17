@@ -1,7 +1,7 @@
-# 高德地图自用版  gaode_maps_pyy
-gaode_maps_pyy for Home Assistant
+# 高德迹图  gaode_jitv
+gaode_jitv for Home Assistant
 
-本仓库是 `dscao/gaode_maps` 的自用 fork，使用独立 domain `gaode_maps_pyy`，可与原版 `gaode_maps` 同时安装。前端高德地图加载方式已调整为 `AMapLoader`，并指定 JS API `version: "2.0"`。
+本仓库是 `dscao/gaode_maps` 的自用 fork，使用独立 domain `gaode_jitv`，可与原版 `gaode_maps` 同时安装。前端高德地图加载方式已调整为 `AMapLoader`，并指定 JS API `version: "2.0"`。
 
 1、使用自定义集成方式UI配置
 
@@ -11,7 +11,7 @@ gaode_maps_pyy for Home Assistant
 
 4、增加自定义卡片
 
-5、实体对话框可显示定位地图，增加属性时 custom_ui_more_info: gaode-map-pyy 显示
+5、实体对话框可显示定位地图，增加属性时 custom_ui_more_info: gaode-jitv 显示
 
 6、增加比例尺显示
 
@@ -32,11 +32,11 @@ gaode_maps_pyy for Home Assistant
 
 HACS > 集成 > 右上角自定义存储库填入： https://github.com/Hai2H/gaode_maps ，类型选择“集成”，随后下载安装，按提示重启 Home Assistant。
 
-或者下载 release 后解压复制 `custom_components/gaode_maps_pyy` 到 `/config/custom_components/gaode_maps_pyy`，重启 Home Assistant。
+或者下载 release 后解压复制 `custom_components/gaode_jitv` 到 `/config/custom_components/gaode_jitv`，重启 Home Assistant。
 
 # 配置方法
 
-Home Assistant 配置 > 设备与服务 > 添加集成 > 搜索 `gaode_maps_pyy` 或 `高德地图自用版`，按提示操作。
+Home Assistant 配置 > 设备与服务 > 添加集成 > 搜索 `gaode_jitv` 或 `高德迹图`，按提示操作。
 
 高德API key
 请至高德开放平台http://lbs.amap.com/ 获取 \

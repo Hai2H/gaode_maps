@@ -507,7 +507,7 @@
 
     toggleTheme() {
       this.darkMode = !this.darkMode;
-      window.localStorage.setItem("GAODE_PYY_THEME", this.darkMode ? "dark" : "light");
+      window.localStorage.setItem("GAODE_JITV_THEME", this.darkMode ? "dark" : "light");
       this.applyThemeChrome();
       this.map.setMapStyle(this.darkMode ? "amap://styles/dark" : "amap://styles/normal");
     }
@@ -521,7 +521,7 @@
     }
 
     resolveInitialDarkMode() {
-      const saved = window.localStorage.getItem("GAODE_PYY_THEME");
+      const saved = window.localStorage.getItem("GAODE_JITV_THEME");
       if (saved === "dark") {
         return true;
       }
@@ -533,7 +533,7 @@
 
     togglePanel() {
       this.panelCollapsed = !this.panelCollapsed;
-      window.localStorage.setItem("GAODE_PYY_PANEL_COLLAPSED", this.panelCollapsed ? "1" : "0");
+      window.localStorage.setItem("GAODE_JITV_PANEL_COLLAPSED", this.panelCollapsed ? "1" : "0");
       this.applyPanelState();
     }
 
@@ -547,7 +547,7 @@
     }
 
     resolveInitialPanelCollapsed() {
-      const saved = window.localStorage.getItem("GAODE_PYY_PANEL_COLLAPSED");
+      const saved = window.localStorage.getItem("GAODE_JITV_PANEL_COLLAPSED");
       if (saved === "1") {
         return true;
       }

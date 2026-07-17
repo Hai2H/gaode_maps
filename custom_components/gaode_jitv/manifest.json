@@ -1,6 +1,6 @@
 {
-    "domain": "gaode_maps_pyy",
-    "name": "高德地图自用版",
+    "domain": "gaode_jitv",
+    "name": "高德迹图",
     "codeowners": ["@Hai2H"],    
     "config_flow": true,
     "documentation": "https://github.com/Hai2H/gaode_maps",

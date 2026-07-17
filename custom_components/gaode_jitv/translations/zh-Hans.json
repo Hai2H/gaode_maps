@@ -2,7 +2,7 @@
     "config": {
         "step": {
             "user": {
-                "title": "高德地图自用版",
+                "title": "高德迹图",
                 "description": "api申请： https://console.amap.com/dev/key/app",
                 "data": {
                     "longtoken": "ha的长期访问令牌(app使用或不保存密码时必须填写)",

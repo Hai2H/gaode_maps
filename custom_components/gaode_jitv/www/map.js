@@ -3,7 +3,7 @@ customElements.whenDefined("ha-panel-lovelace").then(() => {
   const html = LitElement.prototype.html;
   const css = LitElement.prototype.css;
 
-  customElements.define("gaode-map-pyy", class extends LitElement {
+  customElements.define("gaode-jitv", class extends LitElement {
     static properties = {
       hass: {},
       stateObj: {},
@@ -41,9 +41,9 @@ customElements.whenDefined("ha-panel-lovelace").then(() => {
     render() {
       if (!this.credentials && !this.loading && this.hass) {
         this.loading = true;
-        this.hass.callWS({ type: "gaode_maps_pyy", data: { type: "gaodekey" } }).then((data) => {
+        this.hass.callWS({ type: "gaode_jitv", data: { type: "gaodekey" } }).then((data) => {
           this.credentials = data || {};
-          sessionStorage.GAODE_PYY_CREDENTIALS = JSON.stringify(this.credentials);
+          sessionStorage.GAODE_JITV_CREDENTIALS = JSON.stringify(this.credentials);
           this.requestUpdate();
         });
       }
@@ -66,14 +66,14 @@ customElements.whenDefined("ha-panel-lovelace").then(() => {
       });
 
       return html`
-        <iframe style="height: ${height}px;" src="/gaode_maps_pyy_www/app.html?${params.toString()}"></iframe>
+        <iframe style="height: ${height}px;" src="/gaode_jitv_www/app.html?${params.toString()}"></iframe>
         ${this.stateObj ? html`<ha-attributes .hass=${this.hass} .stateObj=${this.stateObj}></ha-attributes>` : ""}
       `;
     }
 
     readCredentials() {
       try {
-        return JSON.parse(sessionStorage.GAODE_PYY_CREDENTIALS || "null");
+        return JSON.parse(sessionStorage.GAODE_JITV_CREDENTIALS || "null");
       } catch (error) {
         return null;
       }
@@ -82,9 +82,9 @@ customElements.whenDefined("ha-panel-lovelace").then(() => {
 
   window.customCards = window.customCards || [];
   window.customCards.push({
-    type: "gaode-map-pyy",
-    name: "高德地图自用版",
+    type: "gaode-jitv",
+    name: "高德迹图",
     preview: true,
-    description: "高德地图自用版卡片"
+    description: "高德迹图卡片"
   });
 });

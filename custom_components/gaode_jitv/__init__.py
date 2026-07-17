@@ -44,7 +44,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     frontend.async_register_built_in_panel(
         hass,
         component_name="iframe",
-        sidebar_title="高德地图自用版",
+        sidebar_title="高德迹图",
         sidebar_icon="mdi:map",
         frontend_url_path=DOMAIN,
         config={ "url": f"{STATIC_PATH}/app.html?mode=panel&hasstoken={hasstoken}&gaodekey={gaodekey}&jscode={jscode}&devicetrackeridlist={devicetrackeridlist}&v={VERSION}" },

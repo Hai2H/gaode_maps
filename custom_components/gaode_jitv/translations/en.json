@@ -2,7 +2,7 @@
     "config": {
         "step": {
             "user": {
-                "title": "Gaode Map Personal",
+                "title": "Gaode JiTu",
                 "description": "API application: https://console.amap.com/dev/key/app",
                 "data": {
                     "longtoken": "ha's long-term access token (required when using app or not saving password)",
