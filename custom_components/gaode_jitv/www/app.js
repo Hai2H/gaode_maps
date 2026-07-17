@@ -79,7 +79,7 @@
       const ids = [
         "sidePanel", "sidePanelBody", "summaryText", "reloadButton", "panelToggleButton", "fitButton", "trafficButton", "zonesButton",
         "themeButton", "deviceList", "deviceCount", "routeStatus", "trackStatus", "trackFrom",
-        "trackTo", "trackLoadButton", "trackPlayButton", "trackPauseButton", "trackStopButton",
+        "trackTo", "trackLoadButton", "trackPlayButton", "trackPauseButton", "trackStopButton", "trackClearButton",
         "cardOverlay", "cardTitle", "cardSubtitle", "toast"
       ];
       ids.forEach((id) => {
@@ -107,6 +107,7 @@
       this.elements.trackPlayButton.addEventListener("click", () => this.playTrack());
       this.elements.trackPauseButton.addEventListener("click", () => this.pauseTrack());
       this.elements.trackStopButton.addEventListener("click", () => this.stopTrack());
+      this.elements.trackClearButton.addEventListener("click", () => { this.clearTrack(); this.elements.trackStatus.textContent = "轨迹已清除"; });
       document.querySelectorAll("[data-route-mode]").forEach((button) => {
         button.addEventListener("click", () => {
           this.routeMode = button.dataset.routeMode;
@@ -170,7 +171,11 @@
 
       states.forEach((state) => {
         if (state.entity_id && state.entity_id.startsWith("zone.") && this.hasCoordinate(state.attributes)) {
-          zones.push(state);
+          if (state.entity_id !== "zone.home") {
+            zones.push(state);
+          } else {
+            this.homeRadius = Number(state.attributes.radius || 100);
+          }
           return;
         }
         if (!state.entity_id || !state.entity_id.startsWith("device_tracker.")) {
@@ -186,6 +191,7 @@
       this.renderHome();
       this.renderDevices();
       this.renderZones(zones);
+      this.buildHomeCircle();
       this.updateDeviceList();
       this.updateCardInfo();
       if (!silent) {
@@ -276,10 +282,29 @@
           fillColor: "#22c55e",
           fillOpacity: 0.16,
           strokeColor: "#16a34a",
-          strokeOpacity: 0.7,
-          strokeWeight: 1
         });
         this.zoneOverlays.push(marker, circle);
+      });
+    }
+    buildHomeCircle() {
+      if (!this.homePoint || !this.map) {
+        return;
+      }
+      if (this.homeCircle) {
+        this.homeCircle.setMap(this.zonesVisible ? this.map : null);
+        return;
+      }
+      const position = this.toGaodePoint(this.homePoint);
+      this.homeCircle = new this.AMap.Circle({
+        map: this.zonesVisible ? this.map : null,
+        center: position,
+        radius: Number(this.homeRadius || 100),
+        fillColor: '#dc2626',
+        fillOpacity: 0.12,
+        strokeColor: '#f97316',
+        strokeOpacity: 0.7,
+        strokeWeight: 1,
+        zIndex: 41
       });
     }
 
@@ -510,6 +535,9 @@
       window.localStorage.setItem("GAODE_JITV_THEME", this.darkMode ? "dark" : "light");
       this.applyThemeChrome();
       this.map.setMapStyle(this.darkMode ? "amap://styles/dark" : "amap://styles/normal");
+      if (this.homeCircle) {
+        this.homeCircle.setMap(this.zonesVisible ? this.map : null);
+      }
     }
 
     applyThemeChrome() {
@@ -742,3 +770,7 @@
     app.init();
   });
 })();
+
+
+
+
